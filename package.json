@@ -9,7 +9,7 @@
     "drivendevel": "./index.js"
   },
   "dependencies": {
-    "node-emoji": "^1.5.1",
+    "emojilib": "^2.2.1",
     "titlecase": "^1.1.2",
     "twitter": "^1.7.0"
   },

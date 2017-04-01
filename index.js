@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const readline = require('readline'),
       fs = require('fs'),
-      Emoji = require('node-emoji'),
+      Emoji = require('emojilib'),
       titleCase = require('titlecase'),
       Twitter = require('twitter');
 
@@ -37,18 +37,66 @@ rl.on('close', () => {
   // Tweet text
   var tweet = titleCase(noun) + '-Driven Development';
 
+  // Exact match
+  var emoji = Emoji.lib[noun];
+
   // Opportunistic emoji
-  // FIXME: if we don't find anything,
-  // - split words, try each word?
-  // - find word roots, search for them?
-  var emoji = Emoji.search(noun);
-  if (emoji.length > 0) {
-    // Sort returned emoji by length of string name, e.g.
-    // man < mans_shoe < man_in_business_suit_levitating
-    emoji.sort((a, b) => {
-      return a.key.length - b.key.length;
+  if (!emoji) {
+    var candidates = [];
+
+    // Match parts_of_emoji_names
+    Object.keys(Emoji.lib).forEach(key => {
+      var parts = key.split('_');
+      if (parts.includes(noun)) {
+        var candidate = Emoji.lib[key];
+        candidate.name = key;
+        candidates.push(candidate);
+      }
     });
-    tweet += ' ' + emoji[0].emoji;
+
+    // Match keywords
+    Object.keys(Emoji.lib).forEach(key => {
+      var emoji = Emoji.lib[key];
+      if (emoji.keywords.includes(noun)) {
+        var candidate = emoji;
+        candidate.name = key;
+        candidates.push(candidate);
+      }
+    });
+
+    // Exclude various things like awful categories
+    candidates.filter(e => {
+      if (['flags', '_custom'].includes(e.category)) {
+        if (DEBUG) console.log(e.name + ' from excluded category, ' + e.category);
+        return false;
+      }
+      return true;
+    });
+
+    // Sort candidates
+    // FIXME:
+    // - should randomly order man_/woman_ and men_/women_ if opposite exists
+    candidates.sort((a, b) => {
+      // Favour nouns in emoji names, e.g. stop_sign < no_entry
+      if (a.name.split('_').includes(noun)) {
+        return -1;
+      }
+      // Favour shorter emoji names
+      return a.name.length - b.name.length;
+    });
+  }
+
+  if (candidates && candidates.length > 0) {
+    if (DEBUG) console.log('candidates: ' + JSON.stringify(candidates, null, 2));
+    emoji = candidates[0];
+  }
+  if (emoji && emoji !== null) {
+    tweet += ' ' + emoji.char;
+  }
+
+  if (DEBUG) {
+    console.log('Tweet: "' + tweet + '"');
+    process.exit(0);
   }
 
   // Toot!
