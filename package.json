@@ -1,0 +1,19 @@
+{
+  "name": "drivendevel",
+  "version": "1.0.0",
+  "description": "*DD - Best Methodologies: Innovation in the field of methodology driven development.",
+  "license": "MIT",
+  "homepage": "https://twitter.com/drivendevel",
+  "repository": "jdub/drivendevel",
+  "bin": {
+    "drivendevel": "./index.js"
+  },
+  "dependencies": {
+    "node-emoji": "^1.5.1",
+    "title-case": "^2.1.1",
+    "twitter": "^1.7.0"
+  },
+  "files": [
+    "yarn.lock"
+  ]
+}
