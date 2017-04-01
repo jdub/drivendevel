@@ -86,7 +86,7 @@ rl.on('close', () => {
     // - should randomly order man_/woman_ and men_/women_ if opposite exists
     candidates.sort((a, b) => {
       // Favour nouns in emoji names, e.g. stop_sign < no_entry
-      if (a.name.split('_').includes(noun)) {
+      if (a.name.split('_').includes(noun) && b.name.split('_').includes(noun) === false) {
         return -1;
       }
       // Favour shorter emoji names
