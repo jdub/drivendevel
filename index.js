@@ -82,8 +82,6 @@ rl.on('close', () => {
     });
 
     // Sort candidates
-    // FIXME:
-    // - should randomly order man_/woman_ and men_/women_ if opposite exists
     candidates.sort((a, b) => {
       // Favour nouns in emoji names, e.g. stop_sign < no_entry
       if (a.name.split('_').includes(noun) && b.name.split('_').includes(noun) === false) {
@@ -96,10 +94,18 @@ rl.on('close', () => {
 
   if (candidates && candidates.length > 0) {
     if (DEBUG) console.log('candidates: ' + JSON.stringify(candidates, null, 2));
+    // FIXME: if top candidate includes man_/_men, randomly swap to woman_/women_
+    // var name = candidates[0].name;
+    // if (name.indexOf('man_') >= 0 || name.indexOf('men_') >= 0) {}
     emoji = candidates[0];
   }
+
   if (emoji && emoji !== null) {
     tweet += ' ' + emoji.char;
+    // Random skin colour for emoji that support it
+    if (emoji.fitzpatrick_scale === true) {
+      tweet += Emoji.fitzpatrick_scale_modifiers[getRandomInt(0, 5)];
+    }
   }
 
   if (DEBUG) {
