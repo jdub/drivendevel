@@ -2,7 +2,7 @@
 const readline = require('readline'),
       fs = require('fs'),
       Emoji = require('node-emoji'),
-      titleCase = require('title-case'),
+      titleCase = require('titlecase'),
       Twitter = require('twitter');
 
 const DEBUG = process.env.DEBUG;
