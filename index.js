@@ -5,7 +5,14 @@ const readline = require('readline'),
       titleCase = require('titlecase'),
       Twitter = require('twitter');
 
+if (process.argv.length != 4) {
+  console.log('Usage: drivendevel <input> <used>');
+  process.exit(1);
+}
+
 const DEBUG = process.env.DEBUG;
+const INPUT = process.argv[2];
+const USED = process.argv[3];
 
 var twitter = new Twitter({
   consumer_key: process.env.CONSUMER_KEY,
@@ -17,7 +24,7 @@ var twitter = new Twitter({
 var lines = [];
 
 const rl = readline.createInterface({
-  input: fs.createReadStream('input.txt')
+  input: fs.createReadStream(INPUT)
 });
 
 rl.on('line', (line) => {
@@ -108,8 +115,8 @@ rl.on('close', () => {
     }
 
     lines.splice(line, 1);
-    fs.writeFileSync('input.txt', lines.join('\n'));
-    fs.appendFileSync('used.txt', noun + '\n');
+    fs.writeFileSync(INPUT, lines.join('\n'));
+    fs.appendFileSync(USED, noun + '\n');
 
     if (DEBUG) console.log('Tweet: "' + tweet + '" ✔');
   });
