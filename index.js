@@ -89,11 +89,19 @@ rl.on('close', () => {
 
     // Sort candidates
     candidates.sort((a, b) => {
+      if (DEBUG) console.log('sort: ' + a.name + ' vs. ' + b.name);
       // Favour nouns in emoji names, e.g. stop_sign < no_entry
       if (a.name.split('_').includes(noun) && b.name.split('_').includes(noun) === false) {
+        if (DEBUG) console.log('favour nouns in emoji names');
         return -1;
       }
+      // Favour fewer keywords
+      if (a.keywords.length != b.keywords.length) {
+        if (DEBUG) console.log('favour fewer keywords');
+        return a.keywords.length - b.keywords.length;
+      }
       // Favour shorter emoji names
+      if (DEBUG) console.log('favour shorter emoji names');
       return a.name.length - b.name.length;
     });
   }
