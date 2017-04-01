@@ -71,14 +71,20 @@ rl.on('close', () => {
       }
     });
 
-    // Exclude various things like awful categories
+    // Exclude various kinds of emoji
     candidates = candidates.filter(e => {
+      // Exclude flags and _custom categories
       if (['flags', '_custom'].includes(e.category)) {
-        if (DEBUG) console.log(e.name + ' from excluded category, ' + e.category);
+        if (DEBUG) console.log(e.name + ' in excluded category, ' + e.category);
         return false;
-      } else {
-        return true;
+      // Exclude kanji emoji (sorry) or scribbles
+      // FIXME: loop through excluded keywords
+      } else if (e.keywords.includes('kanji') || e.keywords.includes('scribble')) {
+        if (DEBUG) console.log(e.name + ' has excluded keyword, kanji/scribble');
+        return false;
       }
+
+      return true;
     });
 
     // Sort candidates
