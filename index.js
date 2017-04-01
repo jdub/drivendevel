@@ -108,10 +108,21 @@ rl.on('close', () => {
 
   if (candidates && candidates.length > 0) {
     if (DEBUG) console.log('candidates: ' + JSON.stringify(candidates, null, 2));
-    // FIXME: if top candidate includes man_/_men, randomly swap to woman_/women_
-    // var name = candidates[0].name;
-    // if (name.indexOf('man_') >= 0 || name.indexOf('men_') >= 0) {}
-    emoji = candidates[0];
+    // Randomly swap man_/_men to woman_/women_, if emoji is available
+    var name = candidates[0].name;
+    if (name.indexOf('man_') >= 0 || name.indexOf('men_') >= 0) {
+      var woman = name.replace(/(.*)(m[ae]n_)(.*)/, '$1wo$2$3');
+      var alternatives = candidates.filter(e => {
+        return e.name === woman;
+      });
+      if (getRandomInt(0, 2) === 0) {
+        emoji = alternatives[0];
+      } else {
+        emoji = candidates[0];
+      }
+    } else {
+      emoji = candidates[0];
+    }
   }
 
   if (emoji && emoji !== null) {
