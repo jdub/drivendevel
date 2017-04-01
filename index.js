@@ -72,12 +72,13 @@ rl.on('close', () => {
     });
 
     // Exclude various things like awful categories
-    candidates.filter(e => {
+    candidates = candidates.filter(e => {
       if (['flags', '_custom'].includes(e.category)) {
         if (DEBUG) console.log(e.name + ' from excluded category, ' + e.category);
         return false;
+      } else {
+        return true;
       }
-      return true;
     });
 
     // Sort candidates
